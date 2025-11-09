@@ -14,7 +14,171 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      budgets: {
+        Row: {
+          budget_amount: number
+          category: string
+          created_at: string | null
+          id: string
+          month: string
+          spent_amount: number | null
+          user_id: string
+        }
+        Insert: {
+          budget_amount: number
+          category: string
+          created_at?: string | null
+          id?: string
+          month: string
+          spent_amount?: number | null
+          user_id: string
+        }
+        Update: {
+          budget_amount?: number
+          category?: string
+          created_at?: string | null
+          id?: string
+          month?: string
+          spent_amount?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          date: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          date?: string
+          id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      goals: {
+        Row: {
+          amount_saved: number | null
+          created_at: string | null
+          id: string
+          months_to_achieve: number
+          priority: number
+          status: string | null
+          target_amount: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          amount_saved?: number | null
+          created_at?: string | null
+          id?: string
+          months_to_achieve: number
+          priority?: number
+          status?: string | null
+          target_amount: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          amount_saved?: number | null
+          created_at?: string | null
+          id?: string
+          months_to_achieve?: number
+          priority?: number
+          status?: string | null
+          target_amount?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      incomes: {
+        Row: {
+          amount: number
+          created_at: string | null
+          date: string
+          id: string
+          note: string | null
+          source_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          date?: string
+          id?: string
+          note?: string | null
+          source_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          date?: string
+          id?: string
+          note?: string | null
+          source_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          dob: string
+          email: string
+          id: string
+          monthly_income: number | null
+          monthly_saving_goal: number | null
+          name: string
+          phone: string | null
+          profile_pic: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dob: string
+          email: string
+          id: string
+          monthly_income?: number | null
+          monthly_saving_goal?: number | null
+          name: string
+          phone?: string | null
+          profile_pic?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dob?: string
+          email?: string
+          id?: string
+          monthly_income?: number | null
+          monthly_saving_goal?: number | null
+          name?: string
+          phone?: string | null
+          profile_pic?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

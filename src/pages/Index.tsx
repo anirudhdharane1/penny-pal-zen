@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FeatureCard } from "@/components/FeatureCard";
+import { useNavigate } from "react-router-dom";
 import { 
   Wallet, 
   TrendingUp, 
@@ -14,6 +15,8 @@ import {
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   const features = [
     {
       icon: PieChart,
@@ -81,7 +84,7 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in">
-              <Button size="xl" variant="hero" className="group">
+              <Button size="xl" variant="hero" className="group" onClick={() => navigate("/auth")}>
                 Get Started Free
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -151,7 +154,7 @@ const Index = () => {
                   with PennyPal. Start your journey to financial wellness today.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-                  <Button size="xl" variant="hero" className="animate-glow">
+                  <Button size="xl" variant="hero" className="animate-glow" onClick={() => navigate("/auth")}>
                     Start Your Journey
                     <ArrowRight className="w-5 h-5" />
                   </Button>
