@@ -7,6 +7,13 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import BudgetPage from "@/pages/Budget";
+import IncomePage from "@/pages/Income";
+import GoalsPage from "@/pages/Goals";
+import DashboardLayout from "./components/DashboardLayout";
+import ProfilePage from "@/pages/Profile";
+
+
 
 const queryClient = new QueryClient();
 
@@ -20,6 +27,11 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/budget" element={<DashboardLayout><BudgetPage /></DashboardLayout>} />
+          <Route path="/income" element={<DashboardLayout><IncomePage /></DashboardLayout>}/>
+          <Route path="/goals" element={<DashboardLayout><GoalsPage /></DashboardLayout>}/>
+          <Route path="/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

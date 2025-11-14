@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Loader2, LogOut, Menu, X, LayoutDashboard, Target, Wallet, PieChart, User } from "lucide-react";
+import {
+  Loader2,
+  LogOut,
+  Menu,
+  X,
+  LayoutDashboard,
+  Target,
+  Wallet,
+  PieChart,
+  User,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Session } from "@supabase/supabase-js";
+import { getToken, logoutUser } from "@/lib/api";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,39 +21,45 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setUser] = useState<{ name?: string } | null>(null);
 
+  // Get first name only
+  const getFirstName = (fullName: string) => {
+    return fullName?.split(" ")[0] || "User";
+  };
+
+  // On mount, verify JWT and fetch user info
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      if (!session && event === 'SIGNED_OUT') {
-        navigate("/auth");
-      }
-    });
+    const token = getToken();
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (!session) {
-        navigate("/auth");
-      }
-      setLoading(false);
-    });
+    if (!token) {
+      navigate("/auth");
+      return;
+    }
 
-    return () => subscription.unsubscribe();
+    // Fetch user data from backend
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/users/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const userData = await res.json();
+        setUser(userData);
+      } catch {
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+    setLoading(false);
   }, [navigate]);
 
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Failed to logout");
-    } else {
-      toast.success("Logged out successfully");
-      navigate("/");
-    }
+  const handleLogout = () => {
+    logoutUser();
+    toast.success("Logged out successfully");
+    navigate("/auth");
   };
 
   if (loading) {
@@ -53,10 +68,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
-  }
-
-  if (!session) {
-    return null;
   }
 
   const navItems = [
@@ -89,8 +100,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <div className="flex flex-col h-full p-6">
           <div className="mb-8">
             <h1 className="text-2xl font-bold gradient-text">PennyPal</h1>
-            <p className="text-sm text-muted-foreground mt-1">Financial Wellness</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Financial Wellness
+            </p>
           </div>
+
+          {user && (
+            <div className="mb-6">
+              <p className="text-muted-foreground text-sm">
+                Hello,{" "}
+                <span className="text-muted-foreground text-sm">
+                  {getFirstName(user.name || "User")}
+                </span>
+              </p>
+            </div>
+          )}
 
           <nav className="flex-1 space-y-2">
             {navItems.map((item) => (
@@ -106,11 +130,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             ))}
           </nav>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={handleLogout}
-          >
+          <Button variant="outline" className="w-full" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>
@@ -118,13 +138,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </aside>
 
       {/* Main content */}
-      <main className={`lg:ml-64 min-h-screen transition-all ${sidebarOpen ? "ml-0" : ""}`}>
-        <div className="p-8 pt-20 lg:pt-8">
-          {children}
-        </div>
+      <main
+        className={`lg:ml-64 min-h-screen transition-all ${
+          sidebarOpen ? "ml-0" : ""
+        }`}
+      >
+        <div className="p-8 pt-20 lg:pt-8">{children}</div>
       </main>
     </div>
   );
 };
 
 export default DashboardLayout;
+
